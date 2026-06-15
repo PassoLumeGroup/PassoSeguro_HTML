@@ -33,36 +33,57 @@
     
     <!-- Header -->
     <header class="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <a href="map.html" class="flex items-center hover:opacity-90 transition-opacity">
-                    <img src="./assets/Logo-verde.svg" alt="Logo PassoSeguro" class="h-10 md:h-12 w-auto object-contain drop-shadow-sm">
-                </a>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-20 items-center">
+            
+            <a href="map.html" class="flex items-center hover:opacity-90 transition-opacity">
+                <img src="./assets/Logo-verde.svg" alt="Logo PassoSeguro" class="h-10 md:h-12 w-auto object-contain drop-shadow-sm">
+            </a>
 
-                <nav class="hidden md:flex items-center gap-2">
-                    <a href="map.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
-                        <i data-lucide="map" class="w-4 h-4"></i> Mapa
-                    </a>
-                    <a href="about.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
-                        <i data-lucide="info" class="w-4 h-4"></i> Sobre
-                    </a>
-                    <a href="support.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold bg-primary text-white shadow-lg shadow-primary/20 flex items-center gap-2">
-                        <i data-lucide="life-buoy" class="w-4 h-4"></i> Suporte
-                    </a>
-                    <a href="add-point.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
-                        <i data-lucide="plus-circle" class="w-4 h-4"></i> Adicionar Ponto
-                    </a>
-                    <a href="profile.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
-                        <i data-lucide="user" class="w-4 h-4"></i> Perfil
-                    </a>
-                    <div class="w-px h-6 bg-slate-200 mx-2"></div>
-                    <a href="index.html" class="p-2.5 text-slate-400 hover:text-secondary hover:bg-secondary/5 rounded-2xl transition-all" title="Sair">
-                        <i data-lucide="log-out" class="w-5 h-5"></i>
-                    </a>
-                </nav>
+            <nav class="hidden md:flex items-center gap-2">
+                <a href="map.html" class="nav-link px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 flex items-center gap-2">
+                    <i data-lucide="map" class="w-4 h-4"></i> Mapa
+                </a>
+                <a href="about.html" class="nav-link px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 flex items-center gap-2">
+                    <i data-lucide="info" class="w-4 h-4"></i> Sobre
+                </a>
+                <a href="support.html" class="nav-link px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 flex items-center gap-2">
+                    <i data-lucide="life-buoy" class="w-4 h-4"></i> Suporte
+                </a>
+                <a href="add-point.html" class="nav-link px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> Adicionar
+                </a>
+                <a href="profile.html" class="nav-link px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 flex items-center gap-2">
+                    <i data-lucide="user" class="w-4 h-4"></i> Perfil
+                </a>
+                <div class="w-px h-6 bg-slate-200 mx-2"></div>
+                <a href="index.html" class="p-2.5 text-slate-400 hover:text-secondary rounded-2xl"><i data-lucide="log-out" class="w-5 h-5"></i></a>
+            </nav>
+
+            <div class="md:hidden">
+                <button id="mobileMenuBtn" class="p-3 rounded-2xl text-slate-600 bg-slate-50 hover:bg-slate-100">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
             </div>
         </div>
+    </div>
     </header>
+
+    <div id="mobileMenu" class="hidden absolute top-20 left-0 w-full bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-2xl z-[2000] flex-col p-4 space-y-2 md:hidden">
+        <a href="map.html" class="px-4 py-3 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3"><i data-lucide="map" class="w-5 h-5"></i> Mapa</a>
+        <a href="about.html" class="px-4 py-3 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3"><i data-lucide="info" class="w-5 h-5"></i> Sobre</a>
+        <a href="support.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold bg-primary text-white shadow-lg shadow-primary/20 flex items-center gap-2">
+            <i data-lucide="life-buoy" class="w-4 h-4"></i> Suporte
+        </a>
+        <a href="add-point.html" class="px-4 py-3 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3"><i data-lucide="plus-circle" class="w-5 h-5"></i> Adicionar Ponto</a>
+        <a href="profile.html" class="px-4 py-3 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-3"><i data-lucide="user" class="w-5 h-5"></i> Perfil</a>
+        <div class="w-full h-px bg-slate-100 my-2"></div>
+        <a href="index.html" class="px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:text-secondary hover:bg-secondary/5 flex items-center gap-3 transition-colors">
+            <i data-lucide="log-out" class="w-5 h-5"></i> Sair
+        </a>
+    </div>
+
+    <main class="flex-1 relative flex flex-col md:flex-row overflow-hidden bg-slate-100">
 
     <main class="flex-1 py-16 px-6">
         <div class="max-w-5xl mx-auto">
