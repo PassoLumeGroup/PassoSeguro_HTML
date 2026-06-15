@@ -329,7 +329,7 @@
         }).addTo(map);
 
         const MOCK_POINTS = [
-            // Novos Pontos Seguros (Solicitados)
+            // Pontos Seguros (Anteriores)
             { 
                 id: 18, 
                 lat: -3.7218, 
@@ -361,29 +361,111 @@
                 image: './assets/mercado-pinhoes.jpg' 
             },
 
-            // Pontos Perigosos (Mantidos do passo anterior)
+            // Novos Pontos Seguros (Adicionados agora)
             { 
-                id: 16, 
-                lat: -3.7215, 
-                lng: -38.5220, 
-                title: 'Vila Holanda - Trecho com Baixa Luminosidade', 
-                description: 'Beco escuro com iluminação pública precária, visibilidade muito reduzida no período noturno, sem movimentação de pedestres e total ausência de câmeras de segurança ou monitoramento.', 
-                rating: 1, 
-                type: 'danger', 
-                image: './assets/vila-holanda.jpg' 
+                id: 30, 
+                lat: -3.8041, 
+                lng: -38.4908, 
+                title: 'Av. Viena Weyne - Cambeba', 
+                description: 'Avenida larga e bem estruturada, com excelente iluminação noturna e policiamento regular. A presença de condomínios e estabelecimentos garante movimentação constante, oferecendo uma rota tranquila e segura.', 
+                rating: 5, 
+                type: 'safe', 
+                image: './assets/viena-weyne.jpg' 
             },
             { 
-                id: 17, 
-                lat: -3.7360, 
-                lng: -38.5015, 
-                title: 'Rua Jorge da Rocha - Alerta de Ponto Deserto', 
-                description: 'Via com calçadas pouco movimentadas e pontos cegos provocados por muros altos. Apresenta baixa iluminação à noite, tornando o percurso isolado e propício a abordagens suspeitas pela falta de policiamento frequente.', 
-                rating: 1, 
-                type: 'danger', 
-                image: './assets/jorge-da-rocha.jpg' 
+                id: 31, 
+                lat: -3.7800, 
+                lng: -38.4950, 
+                title: 'Av. Léa Pompéu - Jardim das Oliveiras', 
+                description: 'Via de grande fluxo com calçadas movimentadas. A iluminação pública em LED proporciona ótima visibilidade à noite, tornando o trajeto seguro para pedestres e reduzindo consideravelmente a sensação de vulnerabilidade.', 
+                rating: 4, 
+                type: 'safe', 
+                image: './assets/lea-pompeu.jpg' 
+            },
+            { 
+                id: 32, 
+                lat: -3.7915, 
+                lng: -38.4975, 
+                title: 'Av. Desembargador Gonzaga - Cidade dos Funcionários', 
+                description: 'Corredor comercial e gastronômico muito ativo. A presença constante de clientes, entregadores e seguranças de lojas, aliada à forte iluminação das fachadas, faz deste um local altamente seguro e acolhedor à noite.', 
+                rating: 5, 
+                type: 'safe', 
+                image: './assets/desembargador-gonzaga.jpg' 
+            },
+            { 
+                id: 33, 
+                lat: -3.7825, 
+                lng: -38.4980, 
+                title: 'Rua Francisco das Chagas Mendes - Jardim das Oliveiras', 
+                description: 'Rua de perfil residencial, porém com boa iluminação pública e forte rede de vizinhança solidária. É comum ver famílias nas calçadas no início da noite, o que inibe abordagens e aumenta a segurança do entorno.', 
+                rating: 4, 
+                type: 'safe', 
+                image: './assets/chagas-mendes.jpg' 
             },
 
-            // Pontos de Apoio (Mantidos do passo anterior)
+            // Pontos Perigosos
+            { 
+                id: 22, 
+                lat: -3.7538, 
+                lng: -38.5142, 
+                title: 'Rua do Canal - Tauape', 
+                description: 'Trecho margeando o canal com infraestrutura precária. A iluminação pública é frequentemente alvo de vandalismo, tornando o local um ponto cego à noite, sem policiamento e com histórico de abordagens.', 
+                rating: 1, 
+                type: 'danger', 
+                image: './assets/rua-do-canal.jpg' 
+            },
+            { 
+                id: 23, 
+                lat: -3.7501, 
+                lng: -38.5089, 
+                title: 'Av. Sabino Monte (Próximo ao 4436) - Tauape', 
+                description: 'Área com longos trechos de muros residenciais contínuos, sem comércio aberto no período noturno. A sensação de isolamento é alta devido ao baixo fluxo de pedestres e iluminação irregular.', 
+                rating: 1, 
+                type: 'danger', 
+                image: './assets/sabino-monte.jpg' 
+            },
+            { 
+                id: 24, 
+                lat: -3.7712, 
+                lng: -38.5055, 
+                title: 'Rua Tenente Wilson - Aerolândia', 
+                description: 'Via com calçadas estreitas e muitos obstáculos visuais. A incidência de luz é muito fraca após as 19h, criando zonas de sombra extensas que favorecem situações de vulnerabilidade para mulheres desacompanhadas.', 
+                rating: 1, 
+                type: 'danger', 
+                image: './assets/tenente-wilson.jpg' 
+            },
+            { 
+                id: 26, 
+                lat: -3.7701, 
+                lng: -38.5090, 
+                title: 'Tv. Sagrado Coração - Aerolândia', 
+                description: 'Travessa curta e fechada, com poucas rotas de fuga. A falta de iluminação adequada e o perfil deserto do local após o fim da tarde exigem máxima atenção e, preferencialmente, o uso de rotas alternativas.', 
+                rating: 1, 
+                type: 'danger', 
+                image: './assets/tv-sagrado-coracao.jpg' 
+            },
+            { 
+                id: 27, 
+                lat: -3.7845, 
+                lng: -38.4901, 
+                title: 'Rua da Copaíba - Jardim das Oliveiras', 
+                description: 'Trecho com vegetação não podada que bloqueia a pouca luz dos postes existentes. O ambiente escuro e isolado é constantemente relatado como inseguro por moradoras da região.', 
+                rating: 1, 
+                type: 'danger', 
+                image: './assets/rua-copaiba.jpg' 
+            },
+            { 
+                id: 28, 
+                lat: -3.7820, 
+                lng: -38.4875, 
+                title: 'Rua do Mercado - Jardim das Oliveiras', 
+                description: 'Apesar do nome, a via fica extremamente deserta e mal iluminada fora do horário comercial. Sem a presença de vigilância ou fluxo de moradores, torna-se um ponto crítico para circulação feminina noturna.', 
+                rating: 1, 
+                type: 'danger', 
+                image: './assets/rua-do-mercado.jpg' 
+            },
+
+            // Pontos de Apoio
             { 
                 id: 10, 
                 lat: -3.7544, 
