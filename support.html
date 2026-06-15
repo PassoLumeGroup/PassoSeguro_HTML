@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suporte - PassoSeguro</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/Icone.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#10b981',
+                        secondary: '#ec4899',
+                        accent: '#f472b6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased font-sans">
+    
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="map.html" class="flex items-center hover:opacity-90 transition-opacity">
+                    <img src="./assets/Logo-verde.svg" alt="Logo PassoSeguro" class="h-10 md:h-12 w-auto object-contain drop-shadow-sm">
+                </a>
+
+                <nav class="hidden md:flex items-center gap-2">
+                    <a href="map.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="map" class="w-4 h-4"></i> Mapa
+                    </a>
+                    <a href="about.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="info" class="w-4 h-4"></i> Sobre
+                    </a>
+                    <a href="support.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold bg-primary text-white shadow-lg shadow-primary/20 flex items-center gap-2">
+                        <i data-lucide="life-buoy" class="w-4 h-4"></i> Suporte
+                    </a>
+                    <a href="add-point.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> Adicionar Ponto
+                    </a>
+                    <a href="profile.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="user" class="w-4 h-4"></i> Perfil
+                    </a>
+                    <div class="w-px h-6 bg-slate-200 mx-2"></div>
+                    <a href="index.html" class="p-2.5 text-slate-400 hover:text-secondary hover:bg-secondary/5 rounded-2xl transition-all" title="Sair">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 py-16 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="mb-12">
+                <h1 class="text-5xl font-display font-extrabold text-slate-900 mb-4 tracking-tight">Como podemos ajudar?</h1>
+                <p class="text-slate-500 text-xl font-medium">Estamos aqui para garantir que sua experiência seja segura e tranquila.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 text-center group hover:border-primary transition-all">
+                    <div class="w-16 h-16 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="phone" class="w-8 h-8 text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Canais de Emergência</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                            <span class="font-bold text-slate-700">Polícia Militar</span>
+                            <a href="tel:190" class="bg-primary text-white px-4 py-2 rounded-xl font-black text-lg">190</a>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                            <span class="font-bold text-slate-700">Corpo de Bombeiros</span>
+                            <a href="tel:193" class="bg-primary text-white px-4 py-2 rounded-xl font-black text-lg">193</a>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border-2 border-secondary/20">
+                            <span class="font-bold text-secondary">Apoio à Mulher</span>
+                            <a href="tel:180" class="bg-secondary text-white px-4 py-2 rounded-xl font-black text-lg">180</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 text-center group hover:border-primary transition-all flex flex-col justify-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="mail" class="w-8 h-8 text-blue-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">E-mail de Suporte</h3>
+                    <p class="text-slate-500 text-sm font-medium mb-6">Para questões técnicas ou denúncias formais.</p>
+                    <a href="mailto:suporte@passoseguro.com.br" class="text-blue-500 font-extrabold text-lg hover:underline">suporte@passoseguro.com.br</a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="bg-white p-10 md:p-12 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100">
+                    <h2 class="text-3xl font-display font-extrabold text-slate-900 mb-8">Envie uma Mensagem</h2>
+                    <form class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 ml-1">Assunto</label>
+                            <select class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary outline-none transition-all font-bold text-slate-900 appearance-none">
+                                <option>Dúvida sobre o Mapa</option>
+                                <option>Denúncia de Ponto</option>
+                                <option>Sugestão de Melhoria</option>
+                                <option>Problemas com a Conta</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 ml-1">Mensagem</label>
+                            <textarea rows="5" class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary outline-none transition-all resize-none font-medium text-slate-900" placeholder="Descreva como podemos te ajudar..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-extrabold py-5 rounded-2xl transition-all shadow-xl shadow-primary/20 text-lg">
+                            Enviar Mensagem
+                        </button>
+                    </form>
+                </div>
+
+                <div class="space-y-6">
+                    <h2 class="text-3xl font-display font-extrabold text-slate-900 mb-8">Perguntas Frequentes</h2>
+                    <div class="space-y-4">
+                        <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+                            <h4 class="font-extrabold text-slate-900 mb-2">Como os pontos são validados?</h4>
+                            <p class="text-slate-500 text-sm font-medium leading-relaxed">Nossa equipe analisa cada sugestão baseada em relatos cruzados de múltiplas usuárias e dados oficiais de segurança.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+                            <h4 class="font-extrabold text-slate-900 mb-2">Meus dados estão seguros?</h4>
+                            <p class="text-slate-500 text-sm font-medium leading-relaxed">Sim, utilizamos criptografia de ponta a ponta e nunca compartilhamos sua localização exata com terceiros.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+                            <h4 class="font-extrabold text-slate-900 mb-2">Como ser uma voluntária?</h4>
+                            <p class="text-slate-500 text-sm font-medium leading-relaxed">Você já contribui ao usar o app! Para ser uma moderadora, entre em contato pelo e-mail de suporte.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Ponto - PassoSeguro</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/Icone.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#10b981',
+                        secondary: '#ec4899',
+                        accent: '#f472b6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased font-sans">
+    
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="map.html" class="flex items-center hover:opacity-90 transition-opacity">
+                    <img src="./assets/Logo-verde.svg" alt="Logo PassoSeguro" class="h-10 md:h-12 w-auto object-contain drop-shadow-sm">
+                </a>
+
+                <nav class="hidden md:flex items-center gap-2">
+                    <a href="map.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="map" class="w-4 h-4"></i> Mapa
+                    </a>
+                    <a href="about.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="info" class="w-4 h-4"></i> Sobre
+                    </a>
+                    <a href="support.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="life-buoy" class="w-4 h-4"></i> Suporte
+                    </a>
+                    <a href="add-point.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold bg-primary text-white shadow-lg shadow-primary/20 flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> Adicionar Ponto
+                    </a>
+                    <a href="profile.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="user" class="w-4 h-4"></i> Perfil
+                    </a>
+                    <div class="w-px h-6 bg-slate-200 mx-2"></div>
+                    <a href="index.html" class="p-2.5 text-slate-400 hover:text-secondary hover:bg-secondary/5 rounded-2xl transition-all" title="Sair">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 py-16 px-6">
+        <div class="max-w-3xl mx-auto">
+            <a href="map.html" class="mb-8 inline-flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-bold group">
+                <div class="bg-white p-2 rounded-xl shadow-sm group-hover:shadow-md transition-all">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </div>
+                Voltar
+            </a>
+
+            <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <h1 class="text-5xl font-display font-extrabold text-slate-900 mb-4 tracking-tight">Contribuir com a Rede</h1>
+                    <p class="text-slate-500 text-xl font-medium">Ajude outras mulheres compartilhando informações sobre locais em Fortaleza.</p>
+                </div>
+                <a href="map.html" class="inline-flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 group">
+                    <i data-lucide="map-pin" class="w-5 h-5 text-primary group-hover:scale-125 transition-transform"></i>
+                    Reportar no Mapa (Estilo Waze)
+                </a>
+            </div>
+
+            <div class="bg-white p-10 md:p-16 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100">
+                <form id="addPointForm" class="space-y-10">
+                    <!-- Type Selection -->
+                    <div class="space-y-4">
+                        <label class="text-sm font-bold text-slate-400 uppercase tracking-widest ml-1">Tipo de Local</label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button type="button" class="type-btn active flex flex-col items-center p-6 rounded-[2rem] border-2 transition-all gap-3 bg-primary/5 border-primary/20 scale-105" data-type="safe">
+                                <i data-lucide="shield-check" class="w-10 h-10 text-primary"></i>
+                                <span class="font-extrabold text-slate-900">Seguro</span>
+                            </button>
+                            <button type="button" class="type-btn flex flex-col items-center p-6 rounded-[2rem] border-2 transition-all gap-3 bg-white border-slate-100 hover:border-slate-200" data-type="danger">
+                                <i data-lucide="alert-triangle" class="w-10 h-10 text-slate-300"></i>
+                                <span class="font-extrabold text-slate-400">Perigoso</span>
+                            </button>
+                            <button type="button" class="type-btn flex flex-col items-center p-6 rounded-[2rem] border-2 transition-all gap-3 bg-white border-slate-100 hover:border-slate-200" data-type="support">
+                                <i data-lucide="venus" class="w-10 h-10 text-slate-300"></i>
+                                <span class="font-extrabold text-slate-400">Apoio</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 ml-1">Nome do Local</label>
+                            <input type="text" required class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary outline-none transition-all font-bold text-slate-900" placeholder="Ex: Farmácia 24h, Praça Iluminada...">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 ml-1">Endereço ou Ponto de Referência</label>
+                            <div class="relative">
+                                <i data-lucide="map-pin" class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400"></i>
+                                <input type="text" required class="w-full pl-12 pr-5 p-5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary outline-none transition-all font-bold text-slate-900" placeholder="Rua, Bairro ou proximidades">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 ml-1">Relato ou Descrição</label>
+                            <textarea required rows="4" class="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary outline-none transition-all resize-none font-medium text-slate-900" placeholder="Conte sua experiência ou por que este local é importante..."></textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 ml-1">Foto do Local (Opcional)</label>
+                            <div class="border-2 border-dashed border-slate-200 rounded-[2rem] p-10 text-center hover:border-primary transition-colors cursor-pointer bg-slate-50 group">
+                                <i data-lucide="image" class="w-12 h-12 text-slate-300 mx-auto mb-3 group-hover:text-primary transition-colors"></i>
+                                <p class="text-slate-500 font-bold">Adicionar foto para ajudar na identificação</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6">
+                        <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-extrabold py-6 rounded-2xl transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 text-xl">
+                            <i data-lucide="send" class="w-6 h-6"></i>
+                            Enviar para Validação
+                        </button>
+                        <p class="text-center text-slate-400 text-sm mt-6 font-medium italic">
+                            Sua contribuição será analisada pela nossa equipe antes de aparecer no mapa.
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+        
+        document.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.type-btn').forEach(b => {
+                    b.classList.remove('bg-primary/5', 'border-primary/20', 'scale-105', 'bg-secondary/5', 'border-secondary/20', 'bg-blue-50', 'border-blue-100');
+                    b.classList.add('bg-white', 'border-slate-100');
+                    b.querySelector('i').classList.add('text-slate-300');
+                    b.querySelector('i').classList.remove('text-primary', 'text-secondary', 'text-blue-500');
+                    b.querySelector('span').classList.add('text-slate-400');
+                    b.querySelector('span').classList.remove('text-slate-900');
+                });
+
+                const type = btn.dataset.type;
+                btn.classList.add('scale-105');
+                btn.classList.remove('bg-white', 'border-slate-100');
+                btn.querySelector('span').classList.remove('text-slate-400');
+                btn.querySelector('span').classList.add('text-slate-900');
+
+                if (type === 'safe') {
+                    btn.classList.add('bg-primary/5', 'border-primary/20');
+                    btn.querySelector('i').classList.add('text-primary');
+                } else if (type === 'danger') {
+                    btn.classList.add('bg-secondary/5', 'border-secondary/20');
+                    btn.querySelector('i').classList.add('text-secondary');
+                } else {
+                    btn.classList.add('bg-blue-50', 'border-blue-100');
+                    btn.querySelector('i').classList.add('text-blue-500');
+                }
+                btn.querySelector('i').classList.remove('text-slate-300');
+            });
+        });
+
+        document.getElementById('addPointForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            window.location.href = 'map.html';
+        });
+    </script>
+</body>
+</html>

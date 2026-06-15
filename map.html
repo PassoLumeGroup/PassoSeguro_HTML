@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa - PassoSeguro</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/Icone.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#10b981',
+                        secondary: '#ec4899',
+                        accent: '#f472b6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+        
+        #map { height: 100%; width: 100%; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .custom-div-icon { background: none; border: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased font-sans flex flex-col h-screen overflow-hidden">
+    
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="map.html" class="flex items-center hover:opacity-90 transition-opacity">
+                    <img src="./assets/Logo-verde.svg" alt="Logo PassoSeguro" class="h-10 md:h-12 w-auto object-contain drop-shadow-sm">
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-2">
+                    <a href="map.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold bg-primary text-white shadow-lg shadow-primary/20 flex items-center gap-2">
+                        <i data-lucide="map" class="w-4 h-4"></i> Mapa
+                    </a>
+                    <a href="about.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="info" class="w-4 h-4"></i> Sobre
+                    </a>
+                    <a href="support.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="life-buoy" class="w-4 h-4"></i> Suporte
+                    </a>
+                    <a href="add-point.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> Adicionar Ponto
+                    </a>
+                    <a href="profile.html" class="px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
+                        <i data-lucide="user" class="w-4 h-4"></i> Perfil
+                    </a>
+                    <div class="w-px h-6 bg-slate-200 mx-2"></div>
+                    <a href="index.html" class="p-2.5 text-slate-400 hover:text-secondary hover:bg-secondary/5 rounded-2xl transition-all" title="Sair">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="p-3 rounded-2xl text-slate-600 bg-slate-50 hover:bg-slate-100 transition-colors">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 relative flex flex-col md:flex-row overflow-hidden bg-slate-100">
+        
+        <!-- Uber-style Search & Route Card -->
+        <div class="absolute top-6 left-6 right-6 md:left-10 md:w-[420px] z-[1000] space-y-3">
+            <div class="bg-white/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-slate-900/20 border border-white overflow-hidden">
+                <!-- Origin Input -->
+                <div class="flex items-center px-6 py-4 border-b border-slate-100 group">
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="w-3 h-3 rounded-full border-2 border-primary bg-white"></div>
+                        <div class="w-0.5 h-8 bg-slate-200 my-1"></div>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Ponto de Partida</label>
+                        <div class="flex items-center gap-2">
+                            <input
+                                id="originInput"
+                                type="text"
+                                placeholder="Sua localização atual"
+                                class="w-full bg-transparent border-none outline-none text-slate-900 font-bold placeholder:text-slate-400 text-sm"
+                            >
+                            <button id="useCurrentLocation" class="p-2 text-primary hover:bg-primary/5 rounded-lg transition-colors" title="Usar minha localização">
+                                <i data-lucide="locate-fixed" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Destination Input -->
+                <div class="flex items-center px-6 py-4 group">
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="w-3 h-3 bg-slate-900 rounded-sm"></div>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Para onde vamos?</label>
+                        <input
+                            id="destinationInput"
+                            type="text"
+                            placeholder="Digite o destino em Fortaleza"
+                            class="w-full bg-transparent border-none outline-none text-slate-900 font-bold placeholder:text-slate-400 text-sm"
+                        >
+                    </div>
+                    <button id="searchRouteBtn" class="bg-primary p-3 rounded-2xl text-white shadow-lg shadow-primary/30 hover:scale-105 transition-transform ml-2">
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Tabs (Waze-style) -->
+            <div class="bg-white/90 backdrop-blur-xl p-1.5 rounded-3xl shadow-2xl border border-white flex gap-1 overflow-x-auto no-scrollbar">
+                <button class="filter-btn active flex-1 whitespace-nowrap px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all border-2 bg-slate-900 text-white border-transparent" data-filter="all">
+                    <i data-lucide="layers" class="w-4 h-4 mb-1 mx-auto"></i>
+                    Todos
+                </button>
+                <button class="filter-btn flex-1 whitespace-nowrap px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all border-2 bg-white/50 text-slate-600 border-transparent hover:bg-white" data-filter="safe">
+                    <i data-lucide="shield-check" class="w-4 h-4 mb-1 mx-auto text-emerald-500"></i>
+                    Seguros
+                </button>
+                <button class="filter-btn flex-1 whitespace-nowrap px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all border-2 bg-white/50 text-slate-600 border-transparent hover:bg-white" data-filter="danger">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 mb-1 mx-auto text-pink-500"></i>
+                    Perigosos
+                </button>
+                <button class="filter-btn flex-1 whitespace-nowrap px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all border-2 bg-white/50 text-slate-600 border-transparent hover:bg-white" data-filter="support">
+                    <i data-lucide="venus" class="w-4 h-4 mb-1 mx-auto text-blue-500"></i>
+                    Apoio
+                </button>
+            </div>
+
+            <!-- Rating Filter -->
+            <div class="bg-white/80 backdrop-blur-lg p-3 rounded-2xl shadow-xl border border-white flex items-center gap-3">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Avaliação:</span>
+                <div class="flex gap-1 flex-1">
+                    <button class="rating-btn active flex-1 py-2 rounded-xl text-[10px] font-black uppercase transition-all border-2 bg-slate-900 text-white border-transparent" data-rating="0">Todas</button>
+                    <button class="rating-btn flex-1 py-2 rounded-xl text-[10px] font-black uppercase transition-all border-2 bg-white/50 text-slate-600 border-transparent hover:bg-white" data-rating="3">3+ ⭐</button>
+                    <button class="rating-btn flex-1 py-2 rounded-xl text-[10px] font-black uppercase transition-all border-2 bg-white/50 text-slate-600 border-transparent hover:bg-white" data-rating="4">4+ ⭐</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Legend -->
+        <div class="absolute bottom-10 left-8 z-[1000] bg-white/90 backdrop-blur-xl p-4 rounded-3xl shadow-2xl border border-white hidden md:block">
+            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Legenda</h4>
+            <div class="space-y-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                    <span class="text-xs font-bold text-slate-600">Local Seguro</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 rounded-full bg-pink-500"></div>
+                    <span class="text-xs font-bold text-slate-600">Local Perigoso</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                    <span class="text-xs font-bold text-slate-600">Ponto de Apoio</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Action Buttons (Waze-style) -->
+        <div class="absolute bottom-10 right-8 z-[1000] flex flex-col gap-4">
+            <button id="locateMeBtn" class="bg-white p-4 rounded-full shadow-2xl text-slate-600 hover:text-primary transition-all hover:scale-110 border border-slate-100">
+                <i data-lucide="locate-fixed" class="w-7 h-7"></i>
+            </button>
+            <button id="reportBtn" class="bg-secondary p-5 rounded-full shadow-2xl text-white hover:scale-110 transition-all flex items-center justify-center group relative">
+                <i data-lucide="plus" class="w-8 h-8 group-hover:rotate-90 transition-transform duration-300"></i>
+                <span class="absolute right-full mr-4 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Relatar Ocorrência</span>
+            </button>
+        </div>
+
+        <!-- Add Point Modal (Hidden by default) -->
+        <div id="addPointModal" class="hidden fixed inset-0 z-[2000] flex items-center justify-center p-6">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" id="modalOverlay"></div>
+            <div class="relative bg-white w-full max-w-md rounded-[3rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-display font-extrabold text-slate-900">Novo Relato</h3>
+                        <button id="closeModal" class="p-2 hover:bg-slate-100 rounded-xl transition-colors">
+                            <i data-lucide="x" class="w-6 h-6 text-slate-400"></i>
+                        </button>
+                    </div>
+                    
+                    <p class="text-slate-500 font-medium mb-8">Clique no mapa para definir o local ou use sua posição atual.</p>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Tipo de Ocorrência</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <button type="button" class="type-select-btn p-4 rounded-2xl border-2 border-slate-100 flex flex-col items-center gap-2 hover:border-emerald-500 transition-all" data-type="safe">
+                                    <i data-lucide="shield-check" class="w-6 h-6 text-emerald-500"></i>
+                                    <span class="text-[10px] font-black uppercase">Seguro</span>
+                                </button>
+                                <button type="button" class="type-select-btn p-4 rounded-2xl border-2 border-slate-100 flex flex-col items-center gap-2 hover:border-pink-500 transition-all" data-type="danger">
+                                    <i data-lucide="alert-triangle" class="w-6 h-6 text-pink-500"></i>
+                                    <span class="text-[10px] font-black uppercase">Perigo</span>
+                                </button>
+                                <button type="button" class="type-select-btn p-4 rounded-2xl border-2 border-slate-100 flex flex-col items-center gap-2 hover:border-blue-500 transition-all" data-type="support">
+                                    <i data-lucide="venus" class="w-6 h-6 text-blue-500"></i>
+                                    <span class="text-[10px] font-black uppercase">Apoio</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Descrição</label>
+                            <textarea id="pointDesc" placeholder="O que está acontecendo aqui?" class="w-full p-5 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-primary transition-all font-medium text-slate-700 h-32 resize-none"></textarea>
+                        </div>
+
+                        <button id="savePointBtn" class="w-full py-5 bg-primary text-white font-extrabold rounded-2xl hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 text-lg">
+                            <i data-lucide="check-circle" class="w-6 h-6"></i>
+                            Publicar Relato
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="flex-1 h-full z-0">
+            <div id="map"></div>
+        </div>
+
+        <!-- Detail Panel (Hidden by default) -->
+        <div id="detailPanel" class="hidden absolute right-0 top-0 bottom-0 w-full md:w-[480px] bg-white z-[1001] shadow-[-20px_0_60px_rgba(0,0,0,0.1)] flex flex-col md:m-4 md:rounded-[3rem] overflow-hidden border border-slate-100 transition-transform duration-500 translate-x-full">
+            <div class="relative h-80">
+                <img id="panelImage" src="" alt="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                
+                <button id="closePanel" class="absolute top-6 right-6 p-3 bg-white/20 backdrop-blur-md text-white rounded-2xl hover:bg-white/40 transition-all">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+
+                <div class="absolute bottom-6 left-8 right-8">
+                    <div id="panelBadge" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black text-white uppercase tracking-widest mb-3 shadow-lg">
+                        <i id="panelBadgeIcon" class="w-4 h-4"></i>
+                        <span id="panelBadgeText"></span>
+                    </div>
+                    <h2 id="panelTitle" class="text-3xl font-display font-extrabold text-white leading-tight"></h2>
+                </div>
+            </div>
+
+            <div class="p-8 flex-1 overflow-y-auto no-scrollbar">
+                <div class="flex items-center justify-between mb-8 bg-slate-50 p-6 rounded-3xl">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Segurança</span>
+                        <div id="panelRating" class="flex items-center gap-1"></div>
+                    </div>
+                    <div class="h-10 w-px bg-slate-200"></div>
+                    <div class="flex flex-col items-end">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Relatos</span>
+                        <span class="font-extrabold text-slate-900">24 usuárias</span>
+                    </div>
+                </div>
+
+                <p id="panelDescription" class="text-slate-600 text-lg leading-relaxed mb-10 font-medium"></p>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <button id="startRouteBtn" class="w-full py-5 bg-primary text-white font-extrabold rounded-2xl hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 text-lg">
+                        <i data-lucide="navigation" class="w-6 h-6"></i>
+                        Iniciar Rota Segura
+                    </button>
+                    <button class="w-full py-5 bg-secondary/5 text-secondary font-extrabold rounded-2xl hover:bg-secondary/10 transition-all flex items-center justify-center gap-3 text-lg">
+                        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                        Denunciar Perigo
+                    </button>
+                </div>
+
+                <div class="mt-12 pt-12 border-t border-slate-100">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-display font-extrabold text-2xl text-slate-900">Comentários</h3>
+                        <button class="text-primary font-bold text-sm hover:underline">Ver todos</button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
+                            <div class="flex items-center gap-3 mb-3">
+                                <img src="https://i.pravatar.cc/100?img=32" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="User">
+                                <div>
+                                    <div class="font-extrabold text-slate-900 text-sm">Juliana Mendes</div>
+                                    <div class="text-xs text-slate-400 font-bold">Ontem às 19:30</div>
+                                </div>
+                            </div>
+                            <p class="text-slate-600 text-sm leading-relaxed font-medium italic">
+                                "Passei por aqui voltando da faculdade e a iluminação estava ótima. Me senti muito tranquila."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Fortaleza Coordinates
+        const FORTALEZA_COORDS = [-3.7319, -38.5267];
+
+        // Initialize Map
+        const map = L.map('map', { zoomControl: false }).setView(FORTALEZA_COORDS, 14);
+
+        // Google Maps Tiles
+        L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: '&copy; Google Maps'
+        }).addTo(map);
+
+        const MOCK_POINTS = [
+            // Novos Pontos Seguros (Solicitados)
+            { 
+                id: 18, 
+                lat: -3.7218, 
+                lng: -38.5194, 
+                title: 'Centro Dragão do Mar de Arte e Cultura', 
+                description: 'Complexo multicultural amplo e muito bem iluminado, com policiamento comunitário frequente e segurança privada. Apresenta um ambiente majoritariamente familiar, com grande circulação de pessoas e excelente infraestrutura para caminhadas noturnas.', 
+                rating: 5, 
+                type: 'safe', 
+                image: './assets/dragao-do-mar.jpg' 
+            },
+            { 
+                id: 19, 
+                lat: -3.7275, 
+                lng: -38.5273, 
+                title: 'Bar Cultural Lions', 
+                description: 'Espaço de eventos de perfil diversificado e alternativo, bastante movimentado nos dias de funcionamento. A entrada e o entorno imediato contam com boa iluminação pública e forte fluxo de clientes, sendo considerado um ponto seguro e receptivo para mulheres.', 
+                rating: 5, 
+                type: 'safe', 
+                image: './assets/bar-lions.jpg' 
+            },
+            { 
+                id: 20, 
+                lat: -3.7311, 
+                lng: -38.5186, 
+                title: 'Mercado Cultural dos Pinhões', 
+                description: 'Ponto turístico tradicional com forte ocupação do espaço público e ambiente familiar. A praça do entorno possui postes de iluminação de alta potência instalados recentemente, garantindo ótima visibilidade de todos os acessos e calçadas movimentadas.', 
+                rating: 5, 
+                type: 'safe', 
+                image: './assets/mercado-pinhoes.jpg' 
+            },
+
+            // Pontos Perigosos (Mantidos do passo anterior)
+            { 
+                id: 16, 
+                lat: -3.7215, 
+                lng: -38.5220, 
+                title: 'Vila Holanda - Trecho com Baixa Luminosidade', 
+                description: 'Beco escuro com iluminação pública precária, visibilidade muito reduzida no período noturno, sem movimentação de pedestres e total ausência de câmeras de segurança ou monitoramento.', 
+                rating: 1, 
+                type: 'danger', 
+                image: './assets/vila-holanda.jpg' 
+            },
+            { 
+                id: 17, 
+                lat: -3.7360, 
+                lng: -38.5015, 
+                title: 'Rua Jorge da Rocha - Alerta de Ponto Deserto', 
+                description: 'Via com calçadas pouco movimentadas e pontos cegos provocados por muros altos. Apresenta baixa iluminação à noite, tornando o percurso isolado e propício a abordagens suspeitas pela falta de policiamento frequente.', 
+                rating: 1, 
+                type: 'danger', 
+                image: './assets/jorge-da-rocha.jpg' 
+            },
+
+            // Pontos de Apoio (Mantidos do passo anterior)
+            { 
+                id: 10, 
+                lat: -3.7544, 
+                lng: -38.5492, 
+                title: 'Delegacia de Defesa da Mulher (DDM-FOR) - Fortaleza', 
+                description: 'Órgão de segurança pública focado no acolhimento e proteção da mulher. Conta com equipe capacitada para investigar crimes de gênero e oferecer suporte emergencial às vítimas de violência doméstica.', 
+                rating: 5, 
+                type: 'support', 
+                image: './assets/ddm-fortaleza.jpg' 
+            },
+            { 
+                id: 11, 
+                lat: -3.7405, 
+                lng: -38.5398, 
+                title: 'Juizado de Violência Doméstica e Familiar Contra a Mulher', 
+                description: 'Órgão do Poder Judiciário responsável por processar e julgar ações criminais decorrentes de violência de gênero, além de garantir a rápida aplicação e fiscalização das medidas protetivas da Lei Maria da Penha.', 
+                rating: 5, 
+                type: 'support', 
+                image: './assets/juizado-mulher.jpg' 
+            },
+            { 
+                id: 12, 
+                lat: -3.7315, 
+                lng: -38.5320, 
+                title: 'Instituto Maria da Penha (IMP)', 
+                description: 'Organização não governamental de grande relevância nacional que atua no enfrentamento da violência contra a mulher. Oferece orientação, promove a conscientização sobre direitos e atua na prevenção da violência de gênero.', 
+                rating: 5, 
+                type: 'support', 
+                image: './assets/imp.jpg' 
+            },
+            { 
+                id: 15, 
+                lat: -3.7852, 
+                lng: -38.4955, 
+                title: 'Coletivo Bem Viver', 
+                description: 'Espaço comunitário e rede de apoio liderada por mulheres, focado no empoderamento feminino. Oferece assistência psicossocial, acolhimento em momentos de crise e fomento à independência de mulheres em situação de vulnerabilidade.', 
+                rating: 5, 
+                type: 'support', 
+                image: './assets/coletivo.jpg' 
+            }
+        ];
+
+        const markers = [];
+        const routes = [];
+        let activeRoute = null;
+        let currentFilter = 'all';
+        let currentMinRating = 0;
+        let userLocation = FORTALEZA_COORDS;
+        let originLocation = null;
+        let destinationLocation = null;
+        let userMarker = null;
+        let originMarker = null;
+        let destinationMarker = null;
+        let isReporting = false;
+        let tempReportMarker = null;
+        let selectedReportType = null;
+
+        // Mock Safe Routes Data
+        const SAFE_ROUTES = [
+            {
+                id: 'route1',
+                name: 'Corredor Beira Mar',
+                coords: [
+                    [-3.7235, -38.5135],
+                    [-3.7245, -38.5085],
+                    [-3.7255, -38.5035],
+                    [-3.7265, -38.4985]
+                ],
+                color: '#10b981'
+            },
+            {
+                id: 'route2',
+                name: 'Eixo Monsenhor Tabosa',
+                coords: [
+                    [-3.7255, -38.5185],
+                    [-3.7245, -38.5215],
+                    [-3.7235, -38.5245]
+                ],
+                color: '#10b981'
+            }
+        ];
+
+        function createCustomIcon(type) {
+            const colorClass = type === 'safe' ? 'bg-emerald-500' : type === 'danger' ? 'bg-pink-500' : type === 'support' ? 'bg-blue-500' : 'bg-primary';
+            const iconName = type === 'safe' ? 'shield-check' : type === 'danger' ? 'alert-triangle' : type === 'support' ? 'venus' : 'user';
+            
+            return L.divIcon({
+                html: `<div class="w-10 h-10 rounded-full border-4 border-white shadow-xl flex items-center justify-center ${colorClass} transition-transform hover:scale-110">
+                        <i data-lucide="${iconName}" class="w-5 h-5 text-white"></i>
+                       </div>`,
+                className: 'custom-div-icon',
+                iconSize: [40, 40],
+                iconAnchor: [20, 40]
+            });
+        }
+
+        // Mock Places for Search (Simulating a Geocoder)
+        const MOCK_PLACES = [
+            { name: "Shopping Iguatemi", coords: [-3.7554, -38.4889] },
+            { name: "Dragão do Mar", coords: [-3.7218, -38.5194] },
+            { name: "Parque do Cocó", coords: [-3.7458, -38.4861] },
+            { name: "Unifor", coords: [-3.7689, -38.4789] },
+            { name: "Beira Mar", coords: [-3.7235, -38.5135] }
+        ];
+
+        function updateLocation() {
+            if ("geolocation" in navigator) {
+                const options = {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                };
+
+                navigator.geolocation.getCurrentPosition((position) => {
+                    userLocation = [position.coords.latitude, position.coords.longitude];
+                    if (userMarker) map.removeLayer(userMarker);
+                    
+                    userMarker = L.marker(userLocation, {
+                        icon: L.divIcon({
+                            html: `<div class="relative">
+                                    <div class="absolute inset-0 bg-primary/30 rounded-full animate-ping"></div>
+                                    <div class="relative w-6 h-6 bg-primary border-4 border-white rounded-full shadow-xl"></div>
+                                   </div>`,
+                            className: 'custom-div-icon',
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 12]
+                        })
+                    }).addTo(map);
+                    
+                    // If origin is not manually set, default to user location
+                    if (!originLocation) {
+                        document.getElementById('originInput').value = "Minha Localização";
+                        originLocation = userLocation;
+                    }
+
+                    // Center map on user if it's the first time
+                    if (!destinationLocation) {
+                        map.setView(userLocation, 15);
+                    }
+                }, (error) => {
+                    console.warn("Geolocation error:", error);
+                    showToast("Não foi possível obter sua localização. Verifique as permissões.", "alert-circle");
+                }, options);
+            } else {
+                showToast("Seu navegador não suporta geolocalização.", "alert-circle");
+            }
+        }
+
+        // Search Logic
+        function handleSearch(inputId, type) {
+            const input = document.getElementById(inputId);
+            const val = input.value.toLowerCase();
+            if (!val) return;
+
+            // Simple mock search
+            const place = MOCK_PLACES.find(p => p.name.toLowerCase().includes(val)) || MOCK_POINTS.find(p => p.title.toLowerCase().includes(val));
+            
+            if (place) {
+                const coords = place.coords || [place.lat, place.lng];
+                if (type === 'origin') {
+                    originLocation = coords;
+                    if (originMarker) map.removeLayer(originMarker);
+                    originMarker = L.marker(coords, {
+                        icon: L.divIcon({
+                            html: `<div class="w-6 h-6 bg-white border-4 border-primary rounded-full shadow-xl"></div>`,
+                            className: 'custom-div-icon',
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 12]
+                        })
+                    }).addTo(map);
+                } else {
+                    destinationLocation = coords;
+                    if (destinationMarker) map.removeLayer(destinationMarker);
+                    destinationMarker = L.marker(coords, {
+                        icon: L.divIcon({
+                            html: `<div class="w-6 h-6 bg-slate-900 border-4 border-white rounded-sm shadow-xl"></div>`,
+                            className: 'custom-div-icon',
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 12]
+                        })
+                    }).addTo(map);
+                }
+                map.flyTo(coords, 15);
+            } else if (val === "minha localização") {
+                originLocation = userLocation;
+            }
+        }
+
+        document.getElementById('originInput').addEventListener('change', () => handleSearch('originInput', 'origin'));
+        document.getElementById('destinationInput').addEventListener('change', () => handleSearch('destinationInput', 'destination'));
+        document.getElementById('useCurrentLocation').addEventListener('click', () => {
+            originLocation = userLocation;
+            document.getElementById('originInput').value = "Minha Localização";
+            showToast("Usando sua localização atual como partida", "locate-fixed");
+        });
+
+        document.getElementById('searchRouteBtn').addEventListener('click', () => {
+            if (!originLocation || !destinationLocation) {
+                showToast("Por favor, defina origem e destino", "alert-circle");
+                return;
+            }
+            startSafeRouteManual(originLocation, destinationLocation);
+        });
+
+        function startSafeRouteManual(start, end) {
+            if (activeRoute) map.removeLayer(activeRoute);
+
+            // Create a solid safe path with glow
+            activeRoute = L.polyline([start, end], {
+                color: '#10b981',
+                weight: 10,
+                opacity: 0.8,
+                lineJoin: 'round',
+                lineCap: 'round'
+            }).addTo(map);
+
+            // Add a glowing effect layer
+            const glow = L.polyline([start, end], {
+                color: '#10b981',
+                weight: 16,
+                opacity: 0.2,
+                lineJoin: 'round',
+                lineCap: 'round'
+            }).addTo(map);
+
+            const bounds = L.latLngBounds([start, end]);
+            map.fitBounds(bounds, { padding: [100, 100] });
+
+            showToast("Calculando melhor rota segura...", "navigation");
+        }
+
+        function renderRoutes() {
+            routes.forEach(r => map.removeLayer(r));
+            routes.length = 0;
+
+            SAFE_ROUTES.forEach(route => {
+                const polyline = L.polyline(route.coords, {
+                    color: route.color,
+                    weight: 8,
+                    opacity: 0.4,
+                    lineJoin: 'round'
+                }).addTo(map);
+                
+                // Add a glowing effect
+                const glow = L.polyline(route.coords, {
+                    color: route.color,
+                    weight: 12,
+                    opacity: 0.1,
+                    lineJoin: 'round'
+                }).addTo(map);
+
+                routes.push(polyline, glow);
+            });
+        }
+
+        function renderPoints() {
+            markers.forEach(m => map.removeLayer(m));
+            markers.length = 0;
+
+            MOCK_POINTS.filter(p => {
+                const typeMatch = currentFilter === 'all' || p.type === currentFilter;
+                const ratingMatch = p.rating >= currentMinRating;
+                return typeMatch && ratingMatch;
+            }).forEach(point => {
+                const marker = L.marker([point.lat, point.lng], { icon: createCustomIcon(point.type) })
+                    .addTo(map)
+                    .on('click', () => showPanel(point));
+                markers.push(marker);
+            });
+            lucide.createIcons();
+        }
+
+        function showPanel(point) {
+            const panel = document.getElementById('detailPanel');
+            panel.classList.remove('hidden');
+            setTimeout(() => panel.classList.remove('translate-x-full'), 10);
+
+            document.getElementById('panelImage').src = point.image;
+            document.getElementById('panelTitle').innerText = point.title;
+            document.getElementById('panelDescription').innerText = point.description;
+            
+            const badge = document.getElementById('panelBadge');
+            const badgeText = document.getElementById('panelBadgeText');
+            const badgeIcon = document.getElementById('panelBadgeIcon');
+            
+            badge.className = "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black text-white uppercase tracking-widest mb-3 shadow-lg " + 
+                (point.type === 'safe' ? "bg-emerald-500" : point.type === 'danger' ? "bg-pink-500" : "bg-blue-500");
+            
+            badgeText.innerText = point.type === 'safe' ? 'Local Seguro' : point.type === 'danger' ? 'Local Perigoso' : 'Ponto de Apoio';
+            badgeIcon.setAttribute('data-lucide', point.type === 'safe' ? 'shield-check' : point.type === 'danger' ? 'alert-triangle' : 'venus');
+
+            const ratingDiv = document.getElementById('panelRating');
+            ratingDiv.innerHTML = '';
+            for(let i=0; i<5; i++) {
+                const star = document.createElement('i');
+                star.setAttribute('data-lucide', 'star');
+                star.className = "w-5 h-5 " + (i < point.rating ? "text-yellow-400 fill-yellow-400" : "text-slate-200");
+                ratingDiv.appendChild(star);
+            }
+
+            // Update Start Route Button
+            const startRouteBtn = document.getElementById('startRouteBtn');
+            startRouteBtn.onclick = () => startSafeRoute(point);
+
+            lucide.createIcons();
+        }
+
+        function startSafeRoute(point) {
+            if (activeRoute) map.removeLayer(activeRoute);
+
+            const targetPos = [point.lat, point.lng];
+            
+            // Create a solid safe path with glow
+            activeRoute = L.polyline([userLocation, targetPos], {
+                color: '#10b981',
+                weight: 10,
+                opacity: 0.8,
+                lineJoin: 'round',
+                lineCap: 'round'
+            }).addTo(map);
+
+            // Add a glowing effect layer
+            const glow = L.polyline([userLocation, targetPos], {
+                color: '#10b981',
+                weight: 16,
+                opacity: 0.2,
+                lineJoin: 'round',
+                lineCap: 'round'
+            }).addTo(map);
+
+            map.flyTo(targetPos, 16);
+            document.getElementById('closePanel').click();
+
+            showToast(`Navegando com segurança para ${point.title}`, 'navigation');
+        }
+
+        function showToast(message, icon = 'info') {
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold shadow-2xl z-[3000] animate-in slide-in-from-bottom-10 duration-500";
+            toast.innerHTML = `<div class="flex items-center gap-3"><i data-lucide="${icon}" class="w-5 h-5 text-primary"></i> ${message}</div>`;
+            document.body.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => {
+                toast.classList.add('animate-out', 'fade-out', 'slide-out-to-bottom-10');
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+
+        // Reporting Logic
+        document.getElementById('reportBtn').addEventListener('click', () => {
+            isReporting = true;
+            showToast('Clique no mapa para marcar o local do relato', 'map-pin');
+            document.getElementById('reportBtn').classList.add('scale-0');
+        });
+
+        map.on('click', (e) => {
+            if (!isReporting) return;
+            
+            if (tempReportMarker) map.removeLayer(tempReportMarker);
+            
+            tempReportMarker = L.marker(e.latlng, {
+                icon: L.divIcon({
+                    html: `<div class="w-10 h-10 rounded-full border-4 border-primary bg-white shadow-xl flex items-center justify-center animate-bounce">
+                            <i data-lucide="map-pin" class="w-6 h-6 text-primary"></i>
+                           </div>`,
+                    className: 'custom-div-icon',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40]
+                })
+            }).addTo(map);
+            lucide.createIcons();
+
+            // Open Modal
+            document.getElementById('addPointModal').classList.remove('hidden');
+        });
+
+        document.querySelectorAll('.type-select-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.type-select-btn').forEach(b => b.classList.remove('border-primary', 'bg-primary/5'));
+                btn.classList.add('border-primary', 'bg-primary/5');
+                selectedReportType = btn.dataset.type;
+            });
+        });
+
+        document.getElementById('savePointBtn').addEventListener('click', () => {
+            if (!selectedReportType) {
+                alert('Por favor, selecione o tipo de ocorrência.');
+                return;
+            }
+
+            const desc = document.getElementById('pointDesc').value;
+            const newPoint = {
+                id: Date.now(),
+                lat: tempReportMarker.getLatLng().lat,
+                lng: tempReportMarker.getLatLng().lng,
+                title: selectedReportType === 'safe' ? 'Local Seguro Relatado' : selectedReportType === 'danger' ? 'Alerta de Perigo' : 'Ponto de Apoio Relatado',
+                description: desc || 'Relato enviado por usuária da comunidade.',
+                rating: 3,
+                type: selectedReportType,
+                image: 'https://picsum.photos/seed/' + Date.now() + '/600/400'
+            };
+
+            MOCK_POINTS.push(newPoint);
+            renderPoints();
+            closeModal();
+            showToast('Relato publicado com sucesso! Obrigada por ajudar a comunidade.', 'check-circle');
+        });
+
+        function closeModal() {
+            document.getElementById('addPointModal').classList.add('hidden');
+            if (tempReportMarker) map.removeLayer(tempReportMarker);
+            tempReportMarker = null;
+            isReporting = false;
+            selectedReportType = null;
+            document.getElementById('pointDesc').value = '';
+            document.querySelectorAll('.type-select-btn').forEach(b => b.classList.remove('border-primary', 'bg-primary/5'));
+            document.getElementById('reportBtn').classList.remove('scale-0');
+        }
+
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        document.getElementById('modalOverlay').addEventListener('click', closeModal);
+
+        document.getElementById('locateMeBtn').addEventListener('click', updateLocation);
+
+        document.getElementById('closePanel').addEventListener('click', () => {
+            const panel = document.getElementById('detailPanel');
+            panel.classList.add('translate-x-full');
+            setTimeout(() => panel.classList.add('hidden'), 500);
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-slate-900', 'text-white', 'border-transparent', 'active');
+                    b.classList.add('bg-white/50', 'text-slate-600');
+                });
+                btn.classList.add('bg-slate-900', 'text-white', 'border-transparent', 'active');
+                btn.classList.remove('bg-white/50', 'text-slate-600');
+                currentFilter = btn.dataset.filter;
+                renderPoints();
+            });
+        });
+
+        document.querySelectorAll('.rating-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.rating-btn').forEach(b => {
+                    b.classList.remove('bg-slate-900', 'text-white', 'border-transparent', 'active');
+                    b.classList.add('bg-white/50', 'text-slate-600');
+                });
+                btn.classList.add('bg-slate-900', 'text-white', 'border-transparent', 'active');
+                btn.classList.remove('bg-white/50', 'text-slate-600');
+                currentMinRating = parseInt(btn.dataset.rating);
+                renderPoints();
+            });
+        });
+
+        updateLocation();
+        renderPoints();
+        renderRoutes();
+    </script>
+</body>
+</html>

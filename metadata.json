@@ -1,0 +1,12 @@
+{
+  "name": "PassoSeguro",
+  "description": "Plataforma de rotas seguras e apoio para mulheres em Fortaleza, Ceará.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "interactive_maps",
+    "user_authentication",
+    "community_reporting"
+  ]
+}
